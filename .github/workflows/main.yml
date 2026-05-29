@@ -1,0 +1,38 @@
+name: Automation Preprocessing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  preprocessing:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Libraries
+      run: |
+        pip install pandas
+
+    - name: Run Automation Script
+      run: |
+        python preprocessing/automate_Sophia_Anindita.py
+
+    - name: Commit Updated Dataset
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+
+        git add preprocessing/data_clean.csv
+
+        git commit -m "Update preprocessing dataset" || echo "No changes"
+
+        git push
